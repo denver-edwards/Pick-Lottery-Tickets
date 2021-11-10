@@ -1,82 +1,184 @@
-import Head from 'next/head'
+import Head from "next/head";
+import { useState } from "react";
+
+import Modal from "@material-tailwind/react/Modal";
+import ModalHeader from "@material-tailwind/react/ModalHeader";
+import ModalBody from "@material-tailwind/react/ModalBody";
+import ModalFooter from "@material-tailwind/react/ModalFooter";
+
+import makeTicket from "./../util/get-rand-num.js";
 
 export default function Home() {
+  const [game, setGame] = useState("Cash4Life");
+  const [tickets, setTickets] = useState(1);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
+  const [showModal, setShowModal] = useState(false);
+
+  function onValueChange(e) {
+    setGame(e.target.name);
+  }
+  function handleTickets(e) {
+    setTickets(e.target.value);
+  }
+  function handleSubmit(e) {
+    e.preventDefault();
+    setTitle(tickets + " Ticket for " + game);
+
+    // circle/bubble around each nuber
+
+    setDescription(makeTicket(game, tickets));
+  }
+
+  function TicketModal({ title, description }) {
+    return (
+      <Modal
+        size="regular"
+        active={showModal}
+        toggler={() => setShowModal(false)}
+      >
+        <ModalHeader toggler={() => setShowModal(false)}>{title} </ModalHeader>
+        <ModalBody>
+          <div className="text-center">
+            {description.map((item) => {
+              return <div>{item}</div>;
+            })}
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <button onClick={(e) => setShowModal(false)}>Close</button>
+        </ModalFooter>
+      </Modal>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
-        <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="text-blue-600" href="https://nextjs.org">
-            Next.js!
-          </a>
-        </h1>
-
-        <p className="mt-3 text-2xl">
-          Get started by editing{' '}
-          <code className="p-3 font-mono text-lg bg-gray-100 rounded-md">
-            pages/index.js
-          </code>
-        </p>
-
-        <div className="flex flex-wrap items-center justify-around max-w-4xl mt-6 sm:w-full">
-          <a
-            href="https://nextjs.org/docs"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label
+            className={
+              "inline-flex items-center mr-2 px-4 hover:text-green-900" +
+              (game === "Cash4Life"
+                ? " bg-green-400 rounded-xl text-green-800"
+                : "")
+            }
           >
-            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Find in-depth information about Next.js features and API.
-            </p>
-          </a>
+            <input
+              type="radio"
+              className="form-radio"
+              name="Cash4Life"
+              value="1"
+              checked={game === "Cash4Life"}
+              onChange={onValueChange}
+            />
+            <span className="m-2">Cash 4 Life</span>
+          </label>
 
-          <a
-            href="https://nextjs.org/learn"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
+          <label
+            className={
+              "inline-flex items-center mr-2 px-4 hover:text-green-900" +
+              (game === "MegaMillions"
+                ? " bg-green-300 rounded-xl text-green-800"
+                : "")
+            }
           >
-            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Learn about Next.js in an interactive course with quizzes!
-            </p>
-          </a>
+            <input
+              type="radio"
+              className="form-radio"
+              name="MegaMillions"
+              value="2"
+              checked={game === "MegaMillions"}
+              onChange={onValueChange}
+            />
+            <span className="m-2">Mega Millions</span>
+          </label>
 
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
+          <label
+            className={
+              "inline-flex items-center mr-2 px-4 hover:text-green-900" +
+              (game === "Powerball"
+                ? " bg-green-300 rounded-xl text-green-800"
+                : "")
+            }
           >
-            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Discover and deploy boilerplate example Next.js projects.
-            </p>
-          </a>
+            <input
+              type="radio"
+              className="form-radio"
+              name="Powerball"
+              value="3"
+              checked={game === "Powerball"}
+              onChange={onValueChange}
+            />
+            <span className="m-2">Powerball</span>
+          </label>
 
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
+          <label
+            className={
+              "inline-flex items-center mr-2 px-4 hover:text-green-900" +
+              (game === "NumbersEve"
+                ? " bg-green-300 rounded-xl text-green-800"
+                : "")
+            }
           >
-            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+            <input
+              type="radio"
+              className="form-radio"
+              name="NumbersEve"
+              value="4"
+              checked={game === "NumbersEve"}
+              onChange={onValueChange}
+            />
+            <span className="m-2">Numbers Eve</span>
+          </label>
         </div>
-      </main>
 
-      <footer className="flex items-center justify-center w-full h-24 border-t">
-        <a
-          className="flex items-center justify-center"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="h-4 ml-2" />
-        </a>
-      </footer>
+        <hr className="my-4" />
+
+        {/* info about each game(number range, closing time, drawing time, current lottery) + link to specific nylottery*/}
+        {/*add anim*/}
+        <div>
+          <span>Text</span>
+
+          <div id="time" className="float-right">
+            <span>Closing time | </span>
+            <span>Drawing time</span>
+          </div>
+
+          <div>Numbers to choose from(range)</div>
+        </div>
+
+        <hr className="my-4" />
+
+        <div>
+          <label htmlFor="number" className="pr-2">
+            Number of tickets (1-10):
+          </label>
+          <input
+            type="number"
+            className="shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id=""
+            name="number"
+            min="1"
+            max="10"
+            value={tickets}
+            onChange={handleTickets}
+          />
+        </div>
+
+        <div className="text-center">
+          <button
+            className="bg-green-500 text-white rounded py-2 px-4 my-4"
+            onClick={() => setShowModal(true)}
+          >
+            Get Numbers
+          </button>
+        </div>
+        {showModal ? (
+          <TicketModal title={title} description={description} />
+        ) : null}
+      </form>
     </div>
-  )
+  );
 }
