@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Modal from "@material-tailwind/react/Modal";
 import ModalHeader from "@material-tailwind/react/ModalHeader";
@@ -12,7 +12,7 @@ export default function Home() {
   const [game, setGame] = useState("Cash4Life");
   const [tickets, setTickets] = useState(1);
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState();
 
   const [showModal, setShowModal] = useState(false);
 
@@ -27,7 +27,6 @@ export default function Home() {
     setTitle(tickets + " Ticket for " + game);
 
     // circle/bubble around each nuber
-
     setDescription(makeTicket(game, tickets));
   }
 
@@ -41,9 +40,16 @@ export default function Home() {
         <ModalHeader toggler={() => setShowModal(false)}>{title} </ModalHeader>
         <ModalBody>
           <div className="text-center">
-            {description.map((item) => {
-              return <div>{item}</div>;
-            })}
+            {description
+              ? description.map((item, index) => {
+                  console.log("item", item);
+                  return (
+                    <div key={index} className="block">
+                      {item}
+                    </div>
+                  );
+                })
+              : null}
           </div>
         </ModalBody>
         <ModalFooter>
