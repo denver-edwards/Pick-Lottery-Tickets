@@ -6,7 +6,7 @@ import ModalHeader from "@material-tailwind/react/ModalHeader";
 import ModalBody from "@material-tailwind/react/ModalBody";
 import ModalFooter from "@material-tailwind/react/ModalFooter";
 
-import makeTicket from "./../util/get-rand-num.js";
+import makeTicket, { lotterygames } from "./../util/get-rand-num.js";
 
 export default function Home() {
   const [game, setGame] = useState("Cash4Life");
@@ -37,7 +37,9 @@ export default function Home() {
         active={showModal}
         toggler={() => setShowModal(false)}
       >
-        <ModalHeader toggler={() => setShowModal(false)}>{title} </ModalHeader>
+        <ModalHeader toggler={() => setShowModal(false)}>
+          <span className="px-6">{title}</span>
+        </ModalHeader>
         <ModalBody>
           <div className="text-center">
             {description
@@ -123,7 +125,7 @@ export default function Home() {
           <label
             className={
               "inline-flex items-center mr-2 px-4 hover:text-green-900" +
-              (game === "NumbersEve"
+              (game === "Pick10"
                 ? " bg-green-300 rounded-xl text-green-800"
                 : "")
             }
@@ -131,12 +133,67 @@ export default function Home() {
             <input
               type="radio"
               className="form-radio"
-              name="NumbersEve"
+              name="Pick10"
               value="4"
-              checked={game === "NumbersEve"}
+              checked={game === "Pick10"}
               onChange={onValueChange}
             />
-            <span className="m-2">Numbers Eve</span>
+            <span className="m-2">Pick 10</span>
+          </label>
+
+          <label
+            className={
+              "inline-flex items-center mr-2 px-4 hover:text-green-900" +
+              (game === "Win4" ? " bg-green-300 rounded-xl text-green-800" : "")
+            }
+          >
+            <input
+              type="radio"
+              className="form-radio"
+              name="Win4"
+              value="5"
+              checked={game === "Win4"}
+              onChange={onValueChange}
+            />
+            <span className="m-2">Win 4</span>
+          </label>
+
+          <label
+            className={
+              "inline-flex items-center mr-2 px-4 hover:text-green-900" +
+              (game === "Take5"
+                ? " bg-green-300 rounded-xl text-green-800"
+                : "")
+            }
+          >
+            <input
+              type="radio"
+              className="form-radio"
+              name="Take5"
+              value="6"
+              checked={game === "Take5"}
+              onChange={onValueChange}
+            />
+            <span className="m-2">Take 5</span>
+          </label>
+
+          <label
+            className={
+              "inline-flex items-center mr-2 px-4 hover:text-green-900" +
+              (game === "Numbers"
+                ? " bg-green-300 rounded-xl text-green-800"
+                : "")
+            }
+          >
+            <input
+              type="radio"
+              className="form-radio"
+              name="Numbers"
+              value="7"
+              checked={game === "Numbers"}
+              onChange={onValueChange}
+            />
+            <span className="m-2">Numbers</span>
           </label>
         </div>
 
@@ -144,15 +201,30 @@ export default function Home() {
 
         {/* info about each game(number range, closing time, drawing time, current lottery) + link to specific nylottery*/}
         {/*add anim*/}
-        <div>
-          <span>Text</span>
-
-          <div id="time" className="float-right">
-            <span>Closing time | </span>
-            <span>Drawing time</span>
+        <div className="flex flex-row">
+          <div className="w-4/5">
+            <div>
+              <span className="text-green-600">{lotterygames[game].draws}</span>{" "}
+              Numbers to choose from: {lotterygames[game].min}-
+              {lotterygames[game].max}
+            </div>
+            {lotterygames[game].ballmax != null ? (
+              <div>
+                1 Lottery ball to choose from: 1-{lotterygames[game].ballmax}
+              </div>
+            ) : null}
           </div>
-
-          <div>Numbers to choose from(range)</div>
+          <div id="time" className="block w-1/5">
+            <p className="rounded-xl bg-blue-200 px-2 mb-2">
+              Draw Days: &nbsp;{lotterygames[game].drawdays}
+            </p>
+            <p className="rounded-xl bg-blue-200 px-2 mb-2">
+              Closing time: &nbsp;{lotterygames[game].closetime}
+            </p>
+            <p className="rounded-xl bg-blue-200 px-2">
+              Drawing time: {lotterygames[game].drawtime}
+            </p>
+          </div>
         </div>
 
         <hr className="my-4" />
@@ -171,6 +243,9 @@ export default function Home() {
             value={tickets}
             onChange={handleTickets}
           />
+          <div className="float-right pr-8 text-green-400 font-medium hover:text-green-800">
+            <a>Show history</a>
+          </div>
         </div>
 
         <div className="text-center">
