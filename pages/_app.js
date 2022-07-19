@@ -1,7 +1,4 @@
 import Head from "next/head";
-
-import "tailwindcss/tailwind.css";
-import "@material-tailwind/react/tailwind.css";
 import "../styles/styles.css";
 
 function MyApp({ Component, pageProps }) {

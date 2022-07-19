@@ -1,20 +1,22 @@
 import Head from "next/head";
 import { useState, useEffect } from "react";
-
-import Modal from "@material-tailwind/react/Modal";
-import ModalHeader from "@material-tailwind/react/ModalHeader";
-import ModalBody from "@material-tailwind/react/ModalBody";
-import ModalFooter from "@material-tailwind/react/ModalFooter";
+import {
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+} from "@material-tailwind/react";
 
 import makeTicket, { lotterygames } from "./../util/get-rand-num.js";
 
 export default function Home() {
+  const [open, setOpen] = useState(false);
+  const handleOpen = (value) => setOpen(!open);
+
   const [game, setGame] = useState("Cash4Life");
   const [tickets, setTickets] = useState(1);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState();
-
-  const [showModal, setShowModal] = useState(false);
 
   function onValueChange(e) {
     setGame(e.target.name);
@@ -32,19 +34,14 @@ export default function Home() {
 
   function TicketModal({ title, description }) {
     return (
-      <Modal
-        size="regular"
-        active={showModal}
-        toggler={() => setShowModal(false)}
-      >
-        <ModalHeader toggler={() => setShowModal(false)}>
+      <Dialog open={open} handler={handleOpen}>
+        <DialogHeader>
           <span className="px-6">{title}</span>
-        </ModalHeader>
-        <ModalBody>
+        </DialogHeader>
+        <DialogBody>
           <div className="text-center">
             {description
               ? description.map((item, index) => {
-                  console.log("item", item);
                   return (
                     <div key={index} className="block">
                       {item}
@@ -53,11 +50,11 @@ export default function Home() {
                 })
               : null}
           </div>
-        </ModalBody>
-        <ModalFooter>
-          <button onClick={(e) => setShowModal(false)}>Close</button>
-        </ModalFooter>
-      </Modal>
+        </DialogBody>
+        <DialogFooter>
+          <button onClick={(e) => handleOpen(false)}>Close</button>
+        </DialogFooter>
+      </Dialog>
     );
   }
 
@@ -199,7 +196,6 @@ export default function Home() {
 
         <hr className="my-4" />
 
-        {/* info about each game(number range, closing time, drawing time, current lottery) + link to specific nylottery*/}
         {/*add anim*/}
         <div className="flex flex-row">
           <div className="w-4/5">
@@ -251,14 +247,12 @@ export default function Home() {
         <div className="text-center">
           <button
             className="bg-green-500 text-white rounded py-2 px-4 my-4"
-            onClick={() => setShowModal(true)}
+            onClick={handleOpen}
           >
             Get Numbers
           </button>
         </div>
-        {showModal ? (
-          <TicketModal title={title} description={description} />
-        ) : null}
+        {open ? <TicketModal title={title} description={description} /> : null}
       </form>
     </div>
   );
