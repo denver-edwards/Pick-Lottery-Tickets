@@ -1,259 +1,296 @@
-import Head from "next/head";
+import Image from "next/image";
+import Link from "next/link";
+import { Select, Option } from "@material-tailwind/react";
+import { IoIosArrowForward } from "react-icons/io";
 import { useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
-} from "@material-tailwind/react";
+import Footer from "./../components/Footer.js";
 
-import makeTicket, { lotterygames } from "./../util/get-rand-num.js";
+import { generateTicket } from "./../util/get-rand-num.js";
+
+const nationwidegame = {
+  megamillions: {
+    name: "MegaMillions",
+    imagesrc: "/logo/logo-megamillion.png",
+    link: "https://www.megamillions.com/",
+    drawtime: "11:00 PM",
+    drawdate: "Tue & Fri",
+    numberofballs: "5",
+    min: "1",
+    max: "70",
+    repeating: false,
+    ballmin: "1",
+    ballmax: "25",
+    cost: "$2",
+    odds: "1 in 24.00",
+  },
+  powerball: {
+    name: "Powerball",
+    imagesrc: "/logo/logo-powerball.png",
+    link: "https://www.powerball.com/games/home",
+    drawtime: "10:59 PM",
+    drawdate: "Mon, Wed & Sat",
+    numberofballs: "5",
+    min: "1",
+    max: "69",
+    repeating: false,
+    ballmin: "1",
+    ballmax: "26",
+    cost: "$2",
+    odds: "1 in 24.90",
+  },
+};
+
+const stategame = {
+  ny: {
+    cash4life: {
+      name: "Cash4Life",
+      imagesrc: "/logo/logo-cash4life.png",
+      link: "https://nylottery.ny.gov/draw-game?game=cash4life",
+      drawtime: "9:00 PM",
+      drawdate: "Daily",
+      numberofballs: "5",
+      min: "1",
+      max: "60",
+      repeating: false,
+      ballmin: "1",
+      ballmax: "4",
+      cost: "$2",
+      odds: "1 in 7.76",
+    },
+    numbers: {
+      name: "Numbers",
+      imagesrc: "/logo/logo-numbers.png",
+      link: "https://nylottery.ny.gov/draw-game?game=numbers",
+      drawtime: "2:15 PM & 10:20 PM",
+      drawdate: "Daily",
+      numberofballs: "3",
+      min: "0",
+      max: "9",
+      repeating: true,
+      ballmin: "",
+      ballmax: "",
+      cost: "$0.50 or $1",
+      odds: "",
+    },
+    pick10: {
+      name: "Pick10",
+      imagesrc: "/logo/logo-pick10.png",
+      link: "https://nylottery.ny.gov/draw-game?game=pick10",
+      drawtime: "8:30 PM",
+      drawdate: "Daily",
+      numberofballs: "10",
+      min: "1",
+      max: "80",
+      repeating: false,
+      ballmin: "",
+      ballmax: "",
+      cost: "$1",
+      odds: "1 in 17.00",
+    },
+    take5: {
+      name: "Take5",
+      imagesrc: "/logo/logo-take5.png",
+      link: "https://nylottery.ny.gov/draw-game?game=take5",
+      drawtime: "2:15 PM & 10:20 PM",
+      drawdate: "Daily",
+      numberofballs: "5",
+      min: "1",
+      max: "39",
+      repeating: false,
+      ballmin: "",
+      ballmax: "",
+      cost: "$1",
+      odds: "1 in 8.77",
+    },
+    win4: {
+      name: "Win4",
+      imagesrc: "/logo/logo-win4.png",
+      link: "https://nylottery.ny.gov/draw-game?game=win4",
+      drawtime: "2:15 PM & 10:20 PM",
+      drawdate: "Daily",
+      numberofballs: "4",
+      min: "0",
+      max: "9",
+      repeating: true,
+      ballmin: "",
+      ballmax: "",
+      cost: "$0.50 or $1",
+      odds: "",
+    },
+    nylotto: {
+      name: "NYLotto",
+      imagesrc: "/logo/logo-nylotto.png",
+      link: "https://nylottery.ny.gov/draw-game?game=lotto",
+      drawtime: "8:15 PM",
+      drawdate: "Wed & Sat",
+      numberofballs: "6",
+      min: "1",
+      max: "59",
+      ballmin: "",
+      ballmax: "",
+      cost: "$1",
+      odds: "1 in 92.05",
+    },
+  },
+  nj: {
+    njlot: {
+      name: "Temp",
+      imagesrc: "/logo/logo-cash4life.png",
+      link: "https://nylottery.ny.gov/draw-game?game=cash4life",
+      drawtime: "5PM",
+      drawdate: "3PM",
+      numberofballs: "6",
+      min: "1",
+      max: "59",
+      ballmin: "",
+      ballmax: "",
+      cost: "$1",
+      odds: "1 in 92.05",
+    },
+  },
+};
 
 export default function Home() {
-  const [open, setOpen] = useState(false);
-  const handleOpen = (value) => setOpen(!open);
-
-  const [game, setGame] = useState("Cash4Life");
-  const [tickets, setTickets] = useState(1);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState();
-
-  function onValueChange(e) {
-    setGame(e.target.name);
-  }
-  function handleTickets(e) {
-    setTickets(e.target.value);
-  }
-  function handleSubmit(e) {
-    e.preventDefault();
-    setTitle(tickets + " Ticket for " + game);
-
-    // circle/bubble around each nuber
-    setDescription(makeTicket(game, tickets));
+  const [state, setState] = useState("");
+  function handleState(e) {
+    setState(e.target.value);
   }
 
-  function TicketModal({ title, description }) {
+  const Selection = () => {
     return (
-      <Dialog open={open} handler={handleOpen}>
-        <DialogHeader>
-          <span className="px-6">{title}</span>
-        </DialogHeader>
-        <DialogBody>
-          <div className="text-center">
-            {description
-              ? description.map((item, index) => {
-                  return (
-                    <div key={index} className="block">
-                      {item}
-                    </div>
-                  );
-                })
-              : null}
-          </div>
-        </DialogBody>
-        <DialogFooter>
-          <button onClick={(e) => handleOpen(false)}>Close</button>
-        </DialogFooter>
-      </Dialog>
+      <div className="h-12 p-4 my-8">
+        <div className="font-bold text-purple-700 inline-block">
+          Lottery Selection
+        </div>
+        <div className="w-60 inline-block float-right">
+          <select
+            name="state"
+            onChange={(e) => handleState(e)}
+            value={state}
+            className="border rounded-3xl py-2 px-12"
+          >
+            <option value="">Select State</option>
+            <option value="ny">New York</option>
+            <option value="nj">New Jersey</option>
+          </select>
+        </div>
+      </div>
     );
-  }
+  };
+
+  const LotteryGame = ({
+    name,
+    imagesrc,
+    link,
+    drawtime,
+    drawdate,
+    priority,
+  }) => {
+    let game = "";
+
+    if ((name == "Powerball") | (name == "MegaMillions")) {
+      game = nationwidegame[name.toLowerCase()];
+    } else {
+      game = stategame[state][name.toLowerCase()];
+    }
+
+    return (
+      <div className="p-6 h-72 bg-lucky">
+        <div className="p-6 h-60 bg-white rounded-lg shadow-md">
+          <div className="h-12 relative">
+            <Image
+              src={imagesrc}
+              alt={name + " Logo"}
+              layout="fill"
+              objectFit="contain"
+              quality={100}
+              draggable="false"
+              priority={priority}
+            />
+          </div>
+
+          <button
+            className="bg-green-400 rounded-3xl py-2 px-4 block hover:bg-green-700"
+            onClick={() =>
+              console.log(
+                generateTicket(
+                  game.min,
+                  game.max,
+                  game.numberofballs,
+                  game.repeating,
+                  game.ballmin,
+                  game.ballmax
+                )
+              )
+            }
+          >
+            <span className="text-white">Generate Ticket</span>
+            <IoIosArrowForward className="inline-block" />
+          </button>
+          <Link href={link}>
+            <a className="text-blue-500 hover:text-blue-800">
+              Visit the Official Website
+            </a>
+          </Link>
+
+          <div className="w-60">
+            <div className="float-left">
+              <span className="block">Draw Time</span>
+              <span>{drawtime}</span>
+            </div>
+            <div className="float-right">
+              <span className="block">Draw Date</span>
+              <span>{drawdate}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const NationWideGames = () => {
+    return (
+      <>
+        <LotteryGame
+          name="MegaMillions"
+          imagesrc="/logo/logo-megamillion.png"
+          link="https://www.megamillions.com/"
+          drawtime="11:00 PM"
+          drawdate="Tue & Fri"
+          priority="true"
+        />
+        <LotteryGame
+          name="Powerball"
+          imagesrc="/logo/logo-powerball.png"
+          link="https://www.powerball.com/games/home"
+          drawtime="10:59 PM"
+          drawdate="Mon, Wed & Sat"
+        />
+      </>
+    );
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-8 text-sm">
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label
-            className={
-              "inline-flex items-center mr-2 px-4 hover:text-green-900" +
-              (game === "Cash4Life"
-                ? " bg-green-400 rounded-xl text-green-800"
-                : "")
-            }
-          >
-            <input
-              type="radio"
-              className="form-radio"
-              name="Cash4Life"
-              value="1"
-              checked={game === "Cash4Life"}
-              onChange={onValueChange}
-            />
-            <span className="m-2">Cash 4 Life</span>
-          </label>
+    <>
+      <div className="header-bg h-96">Header</div>
+      <Selection />
+      <NationWideGames />
 
-          <label
-            className={
-              "inline-flex items-center mr-2 px-4 hover:text-green-900" +
-              (game === "MegaMillions"
-                ? " bg-green-300 rounded-xl text-green-800"
-                : "")
-            }
-          >
-            <input
-              type="radio"
-              className="form-radio"
-              name="MegaMillions"
-              value="2"
-              checked={game === "MegaMillions"}
-              onChange={onValueChange}
-            />
-            <span className="m-2">Mega Millions</span>
-          </label>
-
-          <label
-            className={
-              "inline-flex items-center mr-2 px-4 hover:text-green-900" +
-              (game === "Powerball"
-                ? " bg-green-300 rounded-xl text-green-800"
-                : "")
-            }
-          >
-            <input
-              type="radio"
-              className="form-radio"
-              name="Powerball"
-              value="3"
-              checked={game === "Powerball"}
-              onChange={onValueChange}
-            />
-            <span className="m-2">Powerball</span>
-          </label>
-
-          <label
-            className={
-              "inline-flex items-center mr-2 px-4 hover:text-green-900" +
-              (game === "Pick10"
-                ? " bg-green-300 rounded-xl text-green-800"
-                : "")
-            }
-          >
-            <input
-              type="radio"
-              className="form-radio"
-              name="Pick10"
-              value="4"
-              checked={game === "Pick10"}
-              onChange={onValueChange}
-            />
-            <span className="m-2">Pick 10</span>
-          </label>
-
-          <label
-            className={
-              "inline-flex items-center mr-2 px-4 hover:text-green-900" +
-              (game === "Win4" ? " bg-green-300 rounded-xl text-green-800" : "")
-            }
-          >
-            <input
-              type="radio"
-              className="form-radio"
-              name="Win4"
-              value="5"
-              checked={game === "Win4"}
-              onChange={onValueChange}
-            />
-            <span className="m-2">Win 4</span>
-          </label>
-
-          <label
-            className={
-              "inline-flex items-center mr-2 px-4 hover:text-green-900" +
-              (game === "Take5"
-                ? " bg-green-300 rounded-xl text-green-800"
-                : "")
-            }
-          >
-            <input
-              type="radio"
-              className="form-radio"
-              name="Take5"
-              value="6"
-              checked={game === "Take5"}
-              onChange={onValueChange}
-            />
-            <span className="m-2">Take 5</span>
-          </label>
-
-          <label
-            className={
-              "inline-flex items-center mr-2 px-4 hover:text-green-900" +
-              (game === "Numbers"
-                ? " bg-green-300 rounded-xl text-green-800"
-                : "")
-            }
-          >
-            <input
-              type="radio"
-              className="form-radio"
-              name="Numbers"
-              value="7"
-              checked={game === "Numbers"}
-              onChange={onValueChange}
-            />
-            <span className="m-2">Numbers</span>
-          </label>
-        </div>
-
-        <hr className="my-4" />
-
-        {/*add anim*/}
-        <div className="flex flex-row">
-          <div className="w-4/5">
-            <div>
-              <span className="text-green-600">{lotterygames[game].draws}</span>{" "}
-              Numbers to choose from: {lotterygames[game].min}-
-              {lotterygames[game].max}
-            </div>
-            {lotterygames[game].ballmax != null ? (
-              <div>
-                1 Lottery ball to choose from: 1-{lotterygames[game].ballmax}
-              </div>
-            ) : null}
-          </div>
-          <div id="time" className="block w-1/5">
-            <p className="rounded-xl bg-blue-200 px-2 mb-2">
-              Draw Days: &nbsp;{lotterygames[game].drawdays}
-            </p>
-            <p className="rounded-xl bg-blue-200 px-2 mb-2">
-              Closing time: &nbsp;{lotterygames[game].closetime}
-            </p>
-            <p className="rounded-xl bg-blue-200 px-2">
-              Drawing time: {lotterygames[game].drawtime}
-            </p>
-          </div>
-        </div>
-
-        <hr className="my-4" />
-
-        <div>
-          <label htmlFor="number" className="pr-2">
-            Number of tickets (1-10):
-          </label>
-          <input
-            type="number"
-            className="shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id=""
-            name="number"
-            min="1"
-            max="10"
-            value={tickets}
-            onChange={handleTickets}
-          />
-          <div className="float-right pr-8 text-green-400 font-medium hover:text-green-800">
-            <a>Show history</a>
-          </div>
-        </div>
-
-        <div className="text-center">
-          <button
-            className="bg-green-500 text-white rounded py-2 px-4 my-4"
-            onClick={handleOpen}
-          >
-            Get Numbers
-          </button>
-        </div>
-        {open ? <TicketModal title={title} description={description} /> : null}
-      </form>
-    </div>
+      {state
+        ? Object.values(stategame[state]).map((game, index) =>
+            game ? (
+              <LotteryGame
+                key={index}
+                name={game.name}
+                imagesrc={game.imagesrc}
+                link={game.link}
+                drawtime={game.drawtime}
+                drawdate={game.drawdate}
+              />
+            ) : null
+          )
+        : null}
+      <Footer />
+    </>
   );
 }
