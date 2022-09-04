@@ -4,7 +4,7 @@
 
 .header-bg {
   background-image: url("/test.svg");
-  background-size: contain;
+  background-size: cover;
   background-repeat: no-repeat;
   /* height: 384px; */
 }

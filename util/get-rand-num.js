@@ -24,7 +24,7 @@ export function generateTicket(min, max, numofballs, repeat, ballmin, ballmax) {
       }
     }
 
-    // if (temp < 10) temp = parseInt("0" + temp);
+    if (temp < 10) temp = "0" + temp;
     listofNums.push(temp);
     listofNums.sort((a, b) => a - b);
   }
@@ -33,7 +33,7 @@ export function generateTicket(min, max, numofballs, repeat, ballmin, ballmax) {
   if (ballmin.length > 0) {
     let gameball = getRandomInt(ballmin, ballmax);
 
-    // if (gameball < 10) gameball = parseInt("0" + gameball);
+    if (gameball < 10) gameball = "0" + gameball;
     listofNums.push(gameball);
   }
 
