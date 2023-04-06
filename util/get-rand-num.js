@@ -6,7 +6,15 @@ export function getRandomInt(min, max) {
   return distribution(engine);
 }
 
-export function generateTicket(min, max, numofballs, repeat, ballmin, ballmax) {
+export function generateTicket(
+  min,
+  max,
+  numofballs,
+  repeat,
+  hasball,
+  ballmin,
+  ballmax
+) {
   var listofNums = [];
 
   // Draw each number

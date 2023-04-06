@@ -71,9 +71,11 @@ export default function Home() {
                 game.max,
                 game.numberofballs,
                 game.repeating,
+                game.hasball,
                 game.ballmin,
                 game.ballmax
               )}
+              hasball={game.hasball}
               showModal={showModal}
               setShowModal={setShowModal}
             />
@@ -112,16 +114,19 @@ export default function Home() {
 
   return (
     <>
-      <div className="header-bg h-60"></div>
-      <Selection />
-      <NationWideGames />
-
-      {state
-        ? Object.values(stategame[state]).map((game, index) =>
-            game ? <LotteryGame key={index} game={game} /> : null
-          )
-        : null}
-      <Footer />
+      {/*<div className="header-bg h-60"></div>*/}
+      <div className="min-h-screen flex flex-col ">
+        <Selection />
+        <NationWideGames />
+        <div className="flex-grow bg-lucky">
+          {state
+            ? Object.values(stategame[state]).map((game, index) =>
+                game ? <LotteryGame key={index} game={game} /> : null
+              )
+            : null}
+        </div>
+        <Footer />
+      </div>
     </>
   );
 }

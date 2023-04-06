@@ -1,6 +1,12 @@
 import { useState } from "react";
 
-export default function Modal({ name, ticket, showModal, setShowModal }) {
+export default function Modal({
+  name,
+  ticket,
+  hasball,
+  showModal,
+  setShowModal,
+}) {
   return (
     <>
       <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -25,10 +31,16 @@ export default function Modal({ name, ticket, showModal, setShowModal }) {
             {/*body*/}
             <div className="relative p-6 flex-auto">
               <p className="my-4 text-slate-500 text-lg leading-relaxed">
-                {ticket.map((x) => (
-                  <span className="mx-2 p-3 bg-green-600 shadow-xl text-white rounded-full">
+                {ticket.map((x, index, arr) => (
+                  <span
+                    key={index}
+                    className={
+                      hasball && arr.length - 1 === index
+                        ? "mx-2 p-3 bg-green-600 shadow-xl text-white rounded-full"
+                        : "mx-2 p-3 bg-white shadow-xl text-green-600 rounded-full"
+                    }
+                  >
                     {x}
-                    {/*if has game ball make it a diff color*/}
                   </span>
                 ))}
               </p>
